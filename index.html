@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course & Assignment Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .course-list {
+            list-style: none;
+        }
+
+        .course-item {
+            background: linear-gradient(45deg, #f8f9ff, #e8f1ff);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .course-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .assignment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .assignments-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .assignment-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .assignment-item.urgent {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .assignment-item.warning {
+            border-left-color: #ffc107;
+            background: #fffbf0;
+        }
+
+        .assignment-details h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .assignment-details p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .assignment-actions button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .assignment-actions button:hover {
+            background: #218838;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            color: #667eea;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Course & Assignment Manager</h1>
+            <p>Stay organized and on top of your coursework!</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="card">
+                <h2>📖 Your Courses</h2>
+                <ul class="course-list" id="courseList">
+                    <li class="course-item">
+                        <div class="course-name">Introduction to Computer Science</div>
+                        <div>Assignments: <span id="cs-count">0</span></div>
+                    </li>
+                    <li class="course-item">
+                        <div class="course-name">Principles of Accounting 1</div>
+                        <div>Assignments: <span id="accounting-count">0</span></div>
+                    </li>
+                    <li class="course-item">
+                        <div class="course-name">Business Statistics</div>
+                        <div>Assignments: <span id="stats-count">0</span></div>
+                    </li>
+                    <li class="course-item">
+                        <div class="course-name">Foundations of Christian Thought</div>
+                        <div>Assignments: <span id="christian-count">0</span></div>
+                    </li>
+                    <li class="course-item">
+                        <div class="course-name">Biblical Interpretation & Spiritual Formation</div>
+                        <div>Assignments: <span id="biblical-count">0</span></div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>➕ Add New Assignment</h2>
+                <form class="assignment-form" id="assignmentForm">
+                    <div class="form-group">
+                        <label for="course">Course</label>
+                        <select id="course" required>
+                            <option value="">Select a course</option>
+                            <option value="cs">Introduction to Computer Science</option>
+                            <option value="accounting">Principles of Accounting 1</option>
+                            <option value="stats">Business Statistics</option>
+                            <option value="christian">Foundations of Christian Thought</option>
+                            <option value="biblical">Biblical Interpretation & Spiritual Formation</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignment">Assignment Name</label>
+                        <input type="text" id="assignment" required placeholder="e.g., Java Programming Project">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dueDate">Due Date</label>
+                        <input type="date" id="dueDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority" required>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description (optional)</label>
+                        <textarea id="description" rows="3" placeholder="Additional details about the assignment..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Add Assignment</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="assignments-section">
+            <h2>📋 Upcoming Assignments</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalAssignments">0</div>
+                    <div>Total Tasks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="urgentAssignments">0</div>
+                    <div>Due Soon</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completedAssignments">0</div>
+                    <div>Completed</div>
+                </div>
+            </div>
+            <div id="assignmentsList">
+                <p style="text-align: center; color: #666; margin: 20px 0;">No assignments yet. Add some above to get started!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let assignments = [];
+        let completedCount = 0;
+
+        const courseMap = {
+            'cs': 'cs-count',
+            'accounting': 'accounting-count',
+            'stats': 'stats-count',
+            'christian': 'christian-count',
+            'biblical': 'biblical-count'
+        };
+
+        const courseName = {
+            'cs': 'Introduction to Computer Science',
+            'accounting': 'Principles of Accounting 1',
+            'stats': 'Business Statistics',
+            'christian': 'Foundations of Christian Thought',
+            'biblical': 'Biblical Interpretation & Spiritual Formation'
+        };
+
+        document.getElementById('assignmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const course = document.getElementById('course').value;
+            const assignmentName = document.getElementById('assignment').value;
+            const dueDate = document.getElementById('dueDate').value;
+            const priority = document.getElementById('priority').value;
+            const description = document.getElementById('description').value;
+
+            const assignment = {
+                id: Date.now(),
+                course: course,
+                name: assignmentName,
+                dueDate: dueDate,
+                priority: priority,
+                description: description,
+                completed: false
+            };
+
+            assignments.push(assignment);
+            updateAssignmentDisplay();
+            updateCourseCount(course);
+            updateStats();
+            
+            // Reset form
+            this.reset();
+        });
+
+        function updateAssignmentDisplay() {
+            const container = document.getElementById('assignmentsList');
+            
+            if (assignments.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; margin: 20px 0;">No assignments yet. Add some above to get started!</p>';
+                return;
+            }
+
+            // Sort assignments by due date
+            const sortedAssignments = assignments.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+            container.innerHTML = sortedAssignments.map(assignment => {
+                const daysUntilDue = Math.ceil((new Date(assignment.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
+                let priorityClass = '';
+                
+                if (daysUntilDue <= 1) priorityClass = 'urgent';
+                else if (daysUntilDue <= 3) priorityClass = 'warning';
+
+                return `
+                    <div class="assignment-item ${priorityClass}" id="assignment-${assignment.id}">
+                        <div class="assignment-details">
+                            <h4>${assignment.name}</h4>
+                            <p><strong>Course:</strong> ${courseName[assignment.course]}</p>
+                            <p><strong>Due:</strong> ${new Date(assignment.dueDate).toLocaleDateString()} 
+                               ${daysUntilDue > 0 ? `(${daysUntilDue} days)` : '(Overdue!)'}
+                            </p>
+                            ${assignment.description ? `<p><strong>Note:</strong> ${assignment.description}</p>` : ''}
+                        </div>
+                        <div class="assignment-actions">
+                            <button onclick="completeAssignment(${assignment.id})">Complete</button>
+                            <button onclick="deleteAssignment(${assignment.id})" style="background: #dc3545;">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function completeAssignment(id) {
+            const assignment = assignments.find(a => a.id === id);
+            if (assignment) {
+                assignment.completed = true;
+                completedCount++;
+                assignments = assignments.filter(a => a.id !== id);
+                updateCourseCount(assignment.course, -1);
+                updateAssignmentDisplay();
+                updateStats();
+            }
+        }
+
+        function deleteAssignment(id) {
+            const assignment = assignments.find(a => a.id === id);
+            if (assignment) {
+                assignments = assignments.filter(a => a.id !== id);
+                updateCourseCount(assignment.course, -1);
+                updateAssignmentDisplay();
+                updateStats();
+            }
+        }
+
+        function updateCourseCount(course, change = 1) {
+            const countElement = document.getElementById(courseMap[course]);
+            if (countElement) {
+                const currentCount = parseInt(countElement.textContent);
+                countElement.textContent = currentCount + change;
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalAssignments').textContent = assignments.length;
+            document.getElementById('completedAssignments').textContent = completedCount;
+            
+            const urgent = assignments.filter(a => {
+                const daysUntilDue = Math.ceil((new Date(a.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
+                return daysUntilDue <= 3;
+            });
+            
+            document.getElementById('urgentAssignments').textContent = urgent.length;
+        }
+
+        // Set minimum date to today
+        document.getElementById('dueDate').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
